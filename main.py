@@ -11,7 +11,6 @@ words_df = pandas.read_csv("data/french_words.csv")  # <--- this is a pandas Dat
 # 2. In order to make the csv file a dictionary
 words = words_df.to_dict(orient="records")  # <--- a pandas DataFrame made into a Dictionary
 
-
 # Create a words_to_learn file that had french_words as a base
 try:
     with open("data/words_to_learn.csv", "r") as file:
@@ -23,54 +22,23 @@ except FileNotFoundError:
         file.write(contents)
 
 words_to_learn_df = pandas.read_csv("data/words_to_learn.csv")
-print(words_to_learn_df.to_string())
 words_to_learn = words_to_learn_df.to_dict(orient="records") # <--- LIST of dictionaries
-print(words_to_learn)
 
 # I wanted to add "Show learned words" option - maybe some other day?
+
 
 def know():
     global words_to_learn, words_to_learn_df
     try:
-        # INDEX OUT OR RANGE ERROR PIERWSZE NAWIAZANIE DO INDEXU
         current_word = words_to_learn[index]["French"]
     except IndexError:
-        print(f"Index: {index}")
         next_card()
     else:
-
-        # TESTING
-        print(f"Index: {index}")
-        print(f"Current word: {index} {current_word}")
-        print(f"Words to learn: {words_to_learn}")
-        print(f"String to delete: {words_to_learn[index]['French']},{words_to_learn[index]['English']}")
-        print(f"Len of words_to_learn_df: {len(words_to_learn_df)}")
-        print(f"Len of words_to_learn LIST: {len(words_to_learn)}")
-
         words_to_learn_df.drop(index, axis=0, inplace=True)
         words_to_learn_df.to_csv("data/words_to_learn.csv", index=False)
-        # string_to_delete = f"{words_to_learn[index]['French']},{words_to_learn[index]['English']}\n"
-        #
-        # with open("data/words_to_learn.csv", "r") as f:
-        #     lines = f.readlines()
-        #     print(f"Words_to_learn lines: {lines}")
-        # with open("data/words_to_learn.csv", "w") as f:
-        #     for line in lines:
-        #         if line != string_to_delete:
-        #             f.write(line)
 
-
-        # Delete from words_to_learn LIST of dictionaries ;_;
         words_to_learn_df = pandas.read_csv("data/words_to_learn.csv")
         words_to_learn = words_to_learn_df.to_dict(orient="records")  # <--- a List of Dictionaries
-
-        # Two lines below were causing IndexError - one additional list elem was being deleted
-        # current_elem = words_to_learn[index]
-        # words_to_learn.remove(current_elem)
-
-        print(f"Len of words_to_learn_df after deleting: {len(words_to_learn_df)}")
-        print(f"Len of words_to_learn LIST after deleting: {len(words_to_learn)}")
-
 
         next_card()
 
@@ -80,8 +48,6 @@ def show_meaning():
     canvas.tag_raise(title)
     canvas.tag_raise(word)
     canvas.itemconfig(title, text="English", fill="white")
-    # 3. Dictionary "words" is used to display words in the program
-
     canvas.itemconfig(word, text=words_to_learn[index]["English"], fill="white")
 
 
@@ -90,7 +56,6 @@ def next_card():
     window.after_cancel(flip_timer)
     with open("data/words_to_learn.csv", "r") as f:
         f.read()
-
     try:
         index = random.randint(0, (len(words_to_learn) - 1))
     except ValueError:
@@ -109,7 +74,6 @@ def next_card():
         canvas.tag_raise(card_front)
         canvas.tag_raise(word)
         canvas.itemconfig(word, text="No words left", fill="black")
-
 
 
 # -------------------------------- UI SETUP -------------------------------- #
