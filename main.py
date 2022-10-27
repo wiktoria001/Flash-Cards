@@ -27,6 +27,8 @@ print(words_to_learn_df.to_string())
 words_to_learn = words_to_learn_df.to_dict(orient="records") # <--- LIST of dictionaries
 print(words_to_learn)
 
+# I wanted to add "Show learned words" option - maybe some other day?
+
 def know():
     global words_to_learn, words_to_learn_df
     try:
@@ -89,17 +91,23 @@ def next_card():
     with open("data/words_to_learn.csv", "r") as f:
         f.read()
 
-    index = random.randint(0, len(words_to_learn))
-    canvas.tag_raise(card_front)
-    canvas.tag_raise(title)
-    canvas.tag_raise(word)
-    canvas.itemconfig(title, text="French", fill="black")
+    try:
+        index = random.randint(0, (len(words_to_learn) - 1))
+    except ValueError:
+        canvas.itemconfig(word, text="No words left", fill="black")
+    else:
+        canvas.tag_raise(card_front)
+        canvas.tag_raise(title)
+        canvas.tag_raise(word)
+        canvas.itemconfig(title, text="French", fill="black")
 
     # INDEX ERROR
     try:
         canvas.itemconfig(word, text=words_to_learn[index]["French"], fill="black")
         flip_timer = window.after(3000, show_meaning)
     except IndexError:
+        canvas.tag_raise(card_front)
+        canvas.tag_raise(word)
         canvas.itemconfig(word, text="No words left", fill="black")
 
 
@@ -133,6 +141,10 @@ cross.grid(column=0, row=1)
 tick_img = PhotoImage(file="./images/right.png")
 tick = Button(command=know, image=tick_img, highlightthickness=0, borderwidth=0, activebackground=BACKGROUND_COLOR)
 tick.grid(column=1, row=1)
+
+words_learned_img = PhotoImage(file="./images/button_show-learned-words.png")
+words_learned = Button(image=words_learned_img, highlightthickness=0, borderwidth=0, activebackground=BACKGROUND_COLOR)
+words_learned.grid(column=1, row=1, sticky=E)
 
 next_card()
 
